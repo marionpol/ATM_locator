@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useFonts } from 'expo-font';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
-import AppLoading from 'expo-app-loading'; 
+import * as SplashScreen from 'expo-splash-screen'; // Import SplashScreen from expo-splash-screen
 import Map from './(tabs)/map';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -13,27 +13,37 @@ export default function App() {
 
   const [isSplashVisible, setIsSplashVisible] = useState(true);
 
+  useEffect(() => {
+    const prepareApp = async () => {
+      await SplashScreen.preventAutoHideAsync(); // Prevent splash screen from hiding immediately
+      if (fontsLoaded) {
+        await SplashScreen.hideAsync(); // Hide splash screen after fonts are loaded
+      }
+    };
+    prepareApp();
+  }, [fontsLoaded]); // Only run this when fonts are loaded
+
   if (!fontsLoaded) {
-    return <AppLoading />;
+    return null; // Do not render anything while fonts are loading
   }
 
   if (isSplashVisible) {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: 'white', marginTop: -50, marginBottom: -50 }}>
-      <View style={styles.splashContainer}>
-        <Text style={styles.maintext}>ATM</Text>
-        <Text style={styles.secondtext}>Leidja</Text>
-        <Image style={styles.image}  source={require('./../assets/img/atmpilt.png')} />
-        <Text style={styles.splashText}>
-          Tere tulemast pangaautomaatide otsimise äppi!
-        </Text>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => setIsSplashVisible(false)}
-        >
-          <Text style={styles.buttonText}>Edasi</Text>
-        </TouchableOpacity>
-      </View>
+        <View style={styles.splashContainer}>
+          <Text style={styles.maintext}>ATM</Text>
+          <Text style={styles.secondtext}>Leidja</Text>
+          <Image style={styles.image} source={require('./../assets/img/atmpilt.png')} />
+          <Text style={styles.splashText}>
+            Tere tulemast pangaautomaatide otsimise äppi!
+          </Text>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => setIsSplashVisible(false)}
+          >
+            <Text style={styles.buttonText}>Edasi</Text>
+          </TouchableOpacity>
+        </View>
       </SafeAreaView>
     );
   }
@@ -49,16 +59,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   maintext: {
-    fontSize: '100',
+    fontSize: 100,
     textAlign: 'center',
     marginTop: -100,
-    fontFamily: "AbhayaLibre-Regular",
+    fontFamily: 'AbhayaLibre-Regular',
   },
   secondtext: {
     textAlign: 'center',
     marginTop: -30,
     fontSize: 22,
-    fontFamily: 'InclusiveSans-Regular', 
+    fontFamily: 'InclusiveSans-Regular',
   },
   image: {
     width: 300,
@@ -66,7 +76,7 @@ const styles = StyleSheet.create({
   },
   splashText: {
     fontSize: 22,
-    fontFamily: 'InclusiveSans-Regular', 
+    fontFamily: 'InclusiveSans-Regular',
     textAlign: 'center',
     marginTop: 20,
     marginBottom: 20,
@@ -85,7 +95,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#fff',
-    fontFamily: 'InclusiveSans-Regular', 
+    fontFamily: 'InclusiveSans-Regular',
     textAlign: 'center',
     fontSize: 24,
     fontWeight: 'bold',
