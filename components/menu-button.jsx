@@ -20,10 +20,14 @@ const MenuButton = ({ handlePress, containerStyles, isLoading }) => {
 
 const styles = StyleSheet.create({
   buttonContainer: {
-    backgroundColor: 'rgba(239, 245, 253, 0.9)',
-    borderRadius: 16,
+    backgroundColor: '#EFF5FD',
+    borderRadius: 5,
     width: 50,
-    height: 50,
+    height: 42,
+    shadowColor: 'black',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.7,
+    shadowRadius: 4,
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
@@ -32,8 +36,8 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   buttonImage: {
-    width: 24,
-    height: 24,
+    width: 30,
+    height: 21,
   },
 });
 

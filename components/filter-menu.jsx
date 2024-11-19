@@ -28,15 +28,15 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'flex-start', // Left side alignment
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Background overlay
+    backgroundColor: 'rgba(0, 0, 0, 0)', // Background overlay
     position: 'absolute',
     top: 0,
-    bottom: 0,
+    bottom: -40,
     left: 0,
     right: 0,
   },
   popupContainer: {
-    width: 250,
+    width: 280,
     height: '100%',
     backgroundColor: 'white',
     padding: 20,

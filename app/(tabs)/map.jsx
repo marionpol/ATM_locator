@@ -13,7 +13,7 @@ export default function Map() {
     longitudeDelta: 0.05,
   });
 
-  const [isPopupVisible, setPopupVisible] = useState(false); // State to control popup visibility
+  const [isPopupVisible, setPopupVisible] = useState(false); 
   const mapRef = useRef(null);
 
   useEffect(() => {
@@ -96,6 +96,8 @@ const styles = StyleSheet.create({
   },
   map: {
     flex: 1,
+    marginTop: -50,
+    marginBottom: -50,
   },
   buttonContainer: {
     position: 'absolute',
