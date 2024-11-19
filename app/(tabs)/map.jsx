@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import MapView from 'react-native-maps';
 import { StyleSheet, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
 
 export default function Map() {
   const [region, setRegion] = useState({
@@ -64,6 +66,7 @@ export default function Map() {
   };
 
   return (
+    
     <View style={styles.container}>
       <MapView
         ref={mapRef}
