@@ -1,31 +1,34 @@
+// Map.js
 import React, { useState, useRef, useEffect } from 'react';
 import MapView from 'react-native-maps';
-import { StyleSheet, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-
+import { StyleSheet, View, SafeAreaView, StatusBar } from 'react-native';
+import { MenuButton } from '@/components/menu-button';
+import { MenuFilter } from '@/components/filter-menu';
 
 export default function Map() {
   const [region, setRegion] = useState({
-    latitude: 58.3784,  
-    longitude: 26.7179, 
-    latitudeDelta: 0.05, 
-    longitudeDelta: 0.05, 
+    latitude: 58.3784,
+    longitude: 26.7179,
+    latitudeDelta: 0.05,
+    longitudeDelta: 0.05,
   });
 
+  const [isPopupVisible, setPopupVisible] = useState(false); // State to control popup visibility
   const mapRef = useRef(null);
 
+  useEffect(() => {
+    StatusBar.setHidden(true, 'fade');
+  }, []);
 
   const minLatitude = 58.2;
   const maxLatitude = 58.5;
   const minLongitude = 26.5;
   const maxLongitude = 27.0;
 
-
   const maxZoomLevel = 0.2;
 
   useEffect(() => {
     if (mapRef.current) {
-
       mapRef.current.setMapBoundaries(
         { latitude: maxLatitude, longitude: maxLongitude },
         { latitude: minLatitude, longitude: minLongitude }
@@ -34,27 +37,23 @@ export default function Map() {
   }, []);
 
   const onRegionChange = (newRegion) => {
-
     const clampedLatitude = Math.min(Math.max(newRegion.latitude, minLatitude), maxLatitude);
     const clampedLongitude = Math.min(Math.max(newRegion.longitude, minLongitude), maxLongitude);
 
     const clampedLatitudeDelta = Math.min(Math.max(newRegion.latitudeDelta), maxZoomLevel);
     const clampedLongitudeDelta = Math.min(Math.max(newRegion.longitudeDelta), maxZoomLevel);
 
-   
     if (
       newRegion.latitude < minLatitude || newRegion.latitude > maxLatitude ||
       newRegion.longitude < minLongitude || newRegion.longitude > maxLongitude
     ) {
-      
       setRegion({
-        latitude: 58.3784, 
+        latitude: 58.3784,
         longitude: 26.7179,
-        latitudeDelta: 0.05, 
-        longitudeDelta: 0.05, 
+        latitudeDelta: 0.05,
+        longitudeDelta: 0.05,
       });
     } else {
-      
       setRegion({
         ...newRegion,
         latitude: clampedLatitude,
@@ -65,20 +64,29 @@ export default function Map() {
     }
   };
 
+  const togglePopup = () => {
+    setPopupVisible(!isPopupVisible); // Toggle popup visibility
+  };
+
   return (
-    
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <MapView
         ref={mapRef}
         style={styles.map}
         region={region}
-        onRegionChangeComplete={onRegionChange} 
-        
-        minDelta={0.01}   
-        maxDelta={maxZoomLevel}   
+        onRegionChangeComplete={onRegionChange}
       />
-    </View>
 
+      {/* Only show the MenuButton when popup is not visible */}
+      {!isPopupVisible && (
+        <View style={styles.buttonContainer}>
+          <MenuButton handlePress={togglePopup} />
+        </View>
+      )}
+
+      {/* MenuFilter as a sliding side menu */}
+      <MenuFilter visible={isPopupVisible} togglePopup={togglePopup} />
+    </SafeAreaView>
   );
 }
 
@@ -87,7 +95,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   map: {
-    width: '100%',
-    height: '100%',
+    flex: 1,
+  },
+  buttonContainer: {
+    position: 'absolute',
+    top: '2%',
+    left: '15%',
+    transform: [{ translateX: -50 }],
+    zIndex: 10,
+    width: '80%',
   },
 });
