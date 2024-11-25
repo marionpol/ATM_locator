@@ -36,8 +36,9 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   buttonImage: {
-    width: 30,
-    height: 21,
+    width: 35,
+    height: 30,
+    resizeMode: 'contain',
   },
 });
 

@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import MapView from 'react-native-maps';
 import { StyleSheet, View, SafeAreaView, StatusBar } from 'react-native';
 import { MenuButton } from '@/components/menu-button';
-import { MenuFilter } from '@/components/filter-menu';
+import { MenuFilter } from '@/app/menu/filter-menu';
 
 export default function Map() {
   const [region, setRegion] = useState({
@@ -69,7 +69,7 @@ export default function Map() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <MapView
         ref={mapRef}
         style={styles.map}
@@ -77,16 +77,14 @@ export default function Map() {
         onRegionChangeComplete={onRegionChange}
       />
 
-      {/* Only show the MenuButton when popup is not visible */}
       {!isPopupVisible && (
         <View style={styles.buttonContainer}>
           <MenuButton handlePress={togglePopup} />
         </View>
       )}
 
-      {/* MenuFilter as a sliding side menu */}
       <MenuFilter visible={isPopupVisible} togglePopup={togglePopup} />
-    </SafeAreaView>
+    </View>
   );
 }
 
