@@ -2,12 +2,9 @@ import React, { useRef, useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Animated, TouchableWithoutFeedback, Image } from 'react-native';
 import Option from '@/components/Option';
 
-const MenuFilter = ({ visible, togglePopup }) => {
+const MenuFilter = ({ visible, togglePopup, selectedBanks, selectedType, setSelectedBanks, setSelectedType }) => {
   const [shouldRender, setShouldRender] = useState(visible);
   const slideAnim = useRef(new Animated.Value(-300)).current;
-
-  const [selectedBanks, setSelectedBanks] = useState([]);
-  const [selectedType, setSelectedType] = useState('Välja');
 
   const bankOptions = ['Swedbank', 'SEB', 'LHV'];
   const typeOptions = ['Välja', 'Sisse/Välja'];
@@ -140,4 +137,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export { MenuFilter };
+export default MenuFilter;

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useFonts } from 'expo-font';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
-import * as SplashScreen from 'expo-splash-screen'; // Import SplashScreen from expo-splash-screen
+import * as SplashScreen from 'expo-splash-screen';
 import Map from './(tabs)/map';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -15,16 +15,16 @@ export default function App() {
 
   useEffect(() => {
     const prepareApp = async () => {
-      await SplashScreen.preventAutoHideAsync(); // Prevent splash screen from hiding immediately
+      await SplashScreen.preventAutoHideAsync(); 
       if (fontsLoaded) {
-        await SplashScreen.hideAsync(); // Hide splash screen after fonts are loaded
+        await SplashScreen.hideAsync(); 
       }
     };
     prepareApp();
-  }, [fontsLoaded]); // Only run this when fonts are loaded
+  }, [fontsLoaded]); 
 
   if (!fontsLoaded) {
-    return null; // Do not render anything while fonts are loading
+    return null; 
   }
 
   if (isSplashVisible) {
@@ -81,6 +81,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 20,
     color: '#333',
+    padding: 5
   },
   button: {
     backgroundColor: '#007CFD',

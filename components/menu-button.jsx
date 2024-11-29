@@ -42,4 +42,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export { MenuButton };
+export default MenuButton;
