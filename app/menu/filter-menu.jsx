@@ -7,7 +7,6 @@ const MenuFilter = ({ visible, togglePopup, selectedBanks, selectedType, setSele
   const slideAnim = useRef(new Animated.Value(-300)).current;
 
   const handleBankPress = (bank) => {
-    console.log('Selected Bank ID:', bank.$id);
     setSelectedBanks((prevSelected) => {
       if (prevSelected.includes(bank.$id)) {
         return prevSelected.filter((id) => id !== bank.$id);
@@ -17,7 +16,6 @@ const MenuFilter = ({ visible, togglePopup, selectedBanks, selectedType, setSele
   };
   
   const handleTypePress = (type) => {
-    console.log('Selected Type ID:', type.$id);
     setSelectedType((prevType) => (prevType === type.$id ? null : type.$id));
   };
   
@@ -52,7 +50,7 @@ const MenuFilter = ({ visible, togglePopup, selectedBanks, selectedType, setSele
             {banks.map((bank) => (
               <Option
               key={bank.$id}
-              option={bank.Name}
+              option={bank.BankName}
               isSelected={selectedBanks.includes(bank.$id)} 
               onPress={() => handleBankPress(bank)}
             />

@@ -7,6 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { databaseID, endpoint, locationDBID, projectID, bankID, typeID } from '@/appwrite.config';
 import { Client, Databases, Query } from 'appwrite';
 import useAppwrite from '@/constants/useAppwrite';
+import InfoModule from '@/app/menu/info-menu';
 
 export default function Map() {
   const [region, setRegion] = useState({
@@ -23,6 +24,9 @@ export default function Map() {
   const [types, setTypes] = useState([]);
   const [selectedBanks, setSelectedBanks] = useState([]);
   const [selectedType, setSelectedType] = useState(null); 
+  const [selectedLocation, setSelectedLocation] = useState(null);
+  const [isInfoVisible, setInfoVisible] = useState(false);
+
   const mapRef = useRef(null);
 
   const client = new Client().setEndpoint(endpoint).setProject(projectID);
@@ -143,39 +147,47 @@ export default function Map() {
           <ActivityIndicator size="large" color="#0000ff" style={styles.loadingIndicator} />
         ) : (
           <MapView
-            ref={mapRef}
-            style={styles.map}
-            region={region}
-            onRegionChangeComplete={onRegionChange}
-          >
-            {filteredLocations.map((location, index) => {
-              const latitude = parseFloat(location.Longitude);
-              const longitude = parseFloat(location.Latitude);
+          ref={mapRef}
+          style={styles.map}
+          initialRegion={region} 
+          region={region} 
+          onRegionChangeComplete={onRegionChange}
+          rotateEnabled={true} 
+        >
+          {filteredLocations.map((location, index) => {
+            const latitude = parseFloat(location.Longitude);
+            const longitude = parseFloat(location.Latitude);
+        
+            if (isNaN(latitude) || isNaN(longitude)) {
+              return null;
+            }
+        
+            return (
+              <Marker
+                key={index}
+                coordinate={{
+                  latitude,
+                  longitude,
+                }}
+                pinColor="red"
+                onPress={() => {
+                  setSelectedLocation(location);
+                  setInfoVisible(true);
+                }}
+              />
+            );
+          })}
+        </MapView>
+        
 
-              if (isNaN(latitude) || isNaN(longitude)) {
-                return null;
-              }
-
-              return (
-                <Marker
-                  key={index}
-                  coordinate={{
-                    latitude,
-                    longitude,
-                  }}
-                  pinColor="red"
-                />
-              );
-            })}
-          </MapView>
         )}
-
+  
         {!isPopupVisible && (
           <View style={styles.buttonContainer}>
             <MenuButton handlePress={togglePopup} />
           </View>
         )}
-
+  
         <MenuFilter
           visible={isPopupVisible}
           togglePopup={togglePopup}
@@ -183,13 +195,19 @@ export default function Map() {
           selectedType={selectedType}
           setSelectedBanks={setSelectedBanks}
           setSelectedType={setSelectedType}
-          banks={banks} 
-          types={types} 
+          banks={banks}
+          types={types}
+        />
+  
+        <InfoModule
+          visible={isInfoVisible}
+          data={selectedLocation}
+          onClose={() => setInfoVisible(false)}
         />
       </View>
     </SafeAreaView>
   );
-}
+}  
 
 const styles = StyleSheet.create({
   container: {
