@@ -10,11 +10,14 @@ const MenuFilter = ({ visible, togglePopup, selectedBanks, selectedType, setSele
   const typeOptions = ['Välja', 'Sisse/Välja'];
 
   const handleBankPress = (option) => {
-    setSelectedBanks((prevSelected) =>
-      prevSelected.includes(option)
-        ? prevSelected.filter((item) => item !== option)
-        : [...prevSelected, option]
-    );
+    setSelectedBanks((prevSelected) => {
+      // Toggle bank selection
+      if (prevSelected.includes(option)) {
+        return prevSelected.filter((item) => item !== option);
+      } else {
+        return [...prevSelected, option];
+      }
+    });
   };
 
   const handleTypePress = (option) => {
@@ -22,6 +25,7 @@ const MenuFilter = ({ visible, togglePopup, selectedBanks, selectedType, setSele
   };
 
   useEffect(() => {
+    // Animating the menu visibility
     Animated.timing(slideAnim, {
       toValue: visible ? 0 : -300,
       duration: 300,
@@ -36,7 +40,7 @@ const MenuFilter = ({ visible, togglePopup, selectedBanks, selectedType, setSele
   if (!shouldRender) return null;
 
   return (
-    <TouchableWithoutFeedback>
+    <TouchableWithoutFeedback onPress={togglePopup}>
       <View style={styles.modalOverlay}>
         <Animated.View style={[styles.popupContainer, { transform: [{ translateX: slideAnim }] }]}>
           <TouchableOpacity onPress={togglePopup}>
