@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'flex-start',
     position: 'absolute',
-    top: 0,
+    top: 15,
     bottom: -50,
     left: 0,
     right: 0,

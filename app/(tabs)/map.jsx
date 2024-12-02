@@ -140,6 +140,19 @@ export default function Map() {
     setPopupVisible(!isPopupVisible);
   };
 
+  const getPinImage = (bankName) => {
+    switch (bankName.toLowerCase()) {
+      case 'swedbank':
+        return require('@/assets/img/swedpin.png');
+      case 'seb':
+        return require('@/assets/img/SEBpin.png');
+      case 'lhv':
+        return require('@/assets/img/LHVpin.png');
+      default:
+        return 'black'; 
+    }
+  };
+  
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white', marginTop: -10, marginBottom: -50 }}>
       <View style={styles.container}>
@@ -147,37 +160,39 @@ export default function Map() {
           <ActivityIndicator size="large" color="#0000ff" style={styles.loadingIndicator} />
         ) : (
           <MapView
-          ref={mapRef}
-          style={styles.map}
-          initialRegion={region} 
-          region={region} 
-          onRegionChangeComplete={onRegionChange}
-          rotateEnabled={true} 
-        >
-          {filteredLocations.map((location, index) => {
-            const latitude = parseFloat(location.Longitude);
-            const longitude = parseFloat(location.Latitude);
-        
-            if (isNaN(latitude) || isNaN(longitude)) {
-              return null;
-            }
-        
-            return (
-              <Marker
-                key={index}
-                coordinate={{
-                  latitude,
-                  longitude,
-                }}
-                pinColor="red"
-                onPress={() => {
-                  setSelectedLocation(location);
-                  setInfoVisible(true);
-                }}
-              />
-            );
-          })}
-        </MapView>
+            ref={mapRef}
+            style={styles.map}
+            initialRegion={region}
+            region={region}
+            onRegionChangeComplete={onRegionChange}
+            rotateEnabled={true}
+          >
+            {filteredLocations.map((location, index) => {
+              const latitude = parseFloat(location.Longitude);
+              const longitude = parseFloat(location.Latitude);
+  
+              if (isNaN(latitude) || isNaN(longitude)) {
+                return null;
+              }
+  
+              const primaryBank = location.banks?.[0]?.BankName || '';
+  
+              return (
+                <Marker
+                  key={index}
+                  coordinate={{
+                    latitude,
+                    longitude,
+                  }}
+                  image={getPinImage(primaryBank)} 
+                  onPress={() => {
+                    setSelectedLocation(location);
+                    setInfoVisible(true);
+                  }}
+                />
+              );
+            })}
+          </MapView>
         
 
         )}
@@ -212,6 +227,8 @@ export default function Map() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginBottom: -50,
+    marginTop: -50,
   },
   map: {
     flex: 1,
