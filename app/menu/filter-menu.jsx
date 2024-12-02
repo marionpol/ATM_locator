@@ -4,7 +4,7 @@ import Option from '@/components/Option';
 
 const MenuFilter = ({ visible, togglePopup, selectedBanks, selectedType, setSelectedBanks, setSelectedType, banks, types }) => {
   const [shouldRender, setShouldRender] = useState(visible);
-  const [darkMode, setDarkMode] = useState(false); // State for dark mode
+  const [darkMode, setDarkMode] = useState(false); 
   const slideAnim = useRef(new Animated.Value(-300)).current;
 
   const handleBankPress = (bank) => {
@@ -38,7 +38,7 @@ const MenuFilter = ({ visible, togglePopup, selectedBanks, selectedType, setSele
 
   if (!shouldRender) return null;
 
-  const currentStyles = darkMode ? darkStyles : lightStyles; // Choose styles based on dark mode
+  const currentStyles = darkMode ? darkStyles : lightStyles; 
 
   return (
     <TouchableWithoutFeedback onPress={togglePopup}>
@@ -49,8 +49,8 @@ const MenuFilter = ({ visible, togglePopup, selectedBanks, selectedType, setSele
               style={baseStyles.closeButton}
               source={
                 darkMode
-                  ? require('@/assets/img/light_icon_close.png') // Dark mode image
-                  : require('@/assets/img/close_btn.png') // Light mode image
+                  ? require('@/assets/img/light_icon_close.png') 
+                  : require('@/assets/img/close_btn.png') 
               }
             />
           </TouchableOpacity>
@@ -89,6 +89,7 @@ const MenuFilter = ({ visible, togglePopup, selectedBanks, selectedType, setSele
 
           <Text style={currentStyles.mode}>Sätted</Text>
           <Text style={currentStyles.mode}>Tingimused & teenused</Text>
+          
         </Animated.View>
       </View>
     </TouchableWithoutFeedback>

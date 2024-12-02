@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import MapView, { Marker } from 'react-native-maps';
 import { StyleSheet, View, ActivityIndicator } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import MenuButton from '@/components/menu-button';
 import MenuFilter from '@/app/menu/filter-menu';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { databaseID, endpoint, locationDBID, projectID, bankID, typeID } from '@/appwrite.config';
-import { Client, Databases, Query } from 'appwrite';
-import useAppwrite from '@/constants/useAppwrite';
 import InfoModule from '@/app/menu/info-menu';
+import { Client, Databases, Query } from 'appwrite';
+import { databaseID, endpoint, locationDBID, projectID, bankID, typeID } from '@/appwrite.config';
+import useAppwrite from '@/constants/useAppwrite';
 
 export default function Map() {
   const [region, setRegion] = useState({
@@ -26,7 +26,6 @@ export default function Map() {
   const [selectedType, setSelectedType] = useState(null); 
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [isInfoVisible, setInfoVisible] = useState(false);
-
   const mapRef = useRef(null);
 
   const client = new Client().setEndpoint(endpoint).setProject(projectID);
@@ -93,16 +92,12 @@ export default function Map() {
   
     fetchAllData();
   }, []);
-  
-
 
   useEffect(() => {
     applyFilters();
   }, [selectedBanks, selectedType, locations]); 
   
-
   const applyFilters = () => {
-  
     if (!locations || locations.length === 0) {
       setFilteredLocations([]);
       return;
@@ -129,11 +124,12 @@ export default function Map() {
   
     setFilteredLocations(filtered);
   };
-  
-  
 
-  const onRegionChange = (newRegion) => {
-    setRegion(newRegion);
+  const TARTU_BOUNDS = {
+    latitudeMin: 58.35,
+    latitudeMax: 58.45,
+    longitudeMin: 26.5,
+    longitudeMax: 26.9,
   };
 
   const togglePopup = () => {
@@ -152,7 +148,35 @@ export default function Map() {
         return 'black'; 
     }
   };
-  
+
+  const onRegionChangeComplete = (newRegion) => {
+    let newLatitude = newRegion.latitude;
+    let newLongitude = newRegion.longitude;
+
+    if (
+      newLatitude < TARTU_BOUNDS.latitudeMin ||
+      newLatitude > TARTU_BOUNDS.latitudeMax ||
+      newLongitude < TARTU_BOUNDS.longitudeMin ||
+      newLongitude > TARTU_BOUNDS.longitudeMax
+    ) {
+      newLatitude = (TARTU_BOUNDS.latitudeMin + TARTU_BOUNDS.latitudeMax) / 2;
+      newLongitude = (TARTU_BOUNDS.longitudeMin + TARTU_BOUNDS.longitudeMax) / 2;
+
+      setRegion({
+        latitude: newLatitude,
+        longitude: newLongitude,
+        latitudeDelta: 0.1,  
+        longitudeDelta: 0.1, 
+      });
+    } else {
+      setRegion({
+        ...newRegion,
+        latitude: newLatitude,
+        longitude: newLongitude,
+      });
+    }
+  };
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white', marginTop: -10, marginBottom: -50 }}>
       <View style={styles.container}>
@@ -164,19 +188,22 @@ export default function Map() {
             style={styles.map}
             initialRegion={region}
             region={region}
-            onRegionChangeComplete={onRegionChange}
+            onRegionChangeComplete={onRegionChangeComplete} 
             rotateEnabled={true}
+            scrollEnabled={true} 
+            zoomEnabled={true} 
+            maxDelta={0.15} 
           >
             {filteredLocations.map((location, index) => {
               const latitude = parseFloat(location.Longitude);
               const longitude = parseFloat(location.Latitude);
-  
+
               if (isNaN(latitude) || isNaN(longitude)) {
                 return null;
               }
-  
+
               const primaryBank = location.banks?.[0]?.BankName || '';
-  
+
               return (
                 <Marker
                   key={index}
@@ -193,16 +220,14 @@ export default function Map() {
               );
             })}
           </MapView>
-        
-
         )}
-  
+
         {!isPopupVisible && (
           <View style={styles.buttonContainer}>
             <MenuButton handlePress={togglePopup} />
           </View>
         )}
-  
+
         <MenuFilter
           visible={isPopupVisible}
           togglePopup={togglePopup}
@@ -213,7 +238,7 @@ export default function Map() {
           banks={banks}
           types={types}
         />
-  
+
         <InfoModule
           visible={isInfoVisible}
           data={selectedLocation}
@@ -222,7 +247,7 @@ export default function Map() {
       </View>
     </SafeAreaView>
   );
-}  
+}
 
 const styles = StyleSheet.create({
   container: {
