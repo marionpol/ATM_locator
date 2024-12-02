@@ -2,30 +2,29 @@ import React, { useRef, useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Animated, TouchableWithoutFeedback, Image } from 'react-native';
 import Option from '@/components/Option';
 
-const MenuFilter = ({ visible, togglePopup, selectedBanks, selectedType, setSelectedBanks, setSelectedType }) => {
+const MenuFilter = ({ visible, togglePopup, selectedBanks, selectedType, setSelectedBanks, setSelectedType, banks, types }) => {
   const [shouldRender, setShouldRender] = useState(visible);
   const slideAnim = useRef(new Animated.Value(-300)).current;
 
-  const bankOptions = ['Swedbank', 'SEB', 'LHV'];
-  const typeOptions = ['Välja', 'Sisse/Välja'];
-
-  const handleBankPress = (option) => {
+  const handleBankPress = (bank) => {
+    console.log('Selected Bank ID:', bank.$id);
     setSelectedBanks((prevSelected) => {
-      // Toggle bank selection
-      if (prevSelected.includes(option)) {
-        return prevSelected.filter((item) => item !== option);
-      } else {
-        return [...prevSelected, option];
+      if (prevSelected.includes(bank.$id)) {
+        return prevSelected.filter((id) => id !== bank.$id);
       }
+      return [...prevSelected, bank.$id];
     });
   };
-
-  const handleTypePress = (option) => {
-    setSelectedType(option);
+  
+  const handleTypePress = (type) => {
+    console.log('Selected Type ID:', type.$id);
+    setSelectedType((prevType) => (prevType === type.$id ? null : type.$id));
   };
+  
+  
 
   useEffect(() => {
-    // Animating the menu visibility
+
     Animated.timing(slideAnim, {
       toValue: visible ? 0 : -300,
       duration: 300,
@@ -39,6 +38,7 @@ const MenuFilter = ({ visible, togglePopup, selectedBanks, selectedType, setSele
 
   if (!shouldRender) return null;
 
+  
   return (
     <TouchableWithoutFeedback onPress={togglePopup}>
       <View style={styles.modalOverlay}>
@@ -49,25 +49,26 @@ const MenuFilter = ({ visible, togglePopup, selectedBanks, selectedType, setSele
 
           <Text style={styles.popupText}>Vali vajalik pank:</Text>
           <View style={styles.optionsContainer}>
-            {bankOptions.map((option, index) => (
+            {banks.map((bank) => (
               <Option
-                key={index}
-                option={option}
-                isSelected={selectedBanks.includes(option)}
-                onPress={handleBankPress}
-              />
+              key={bank.$id}
+              option={bank.Name}
+              isSelected={selectedBanks.includes(bank.$id)} 
+              onPress={() => handleBankPress(bank)}
+            />
+            
             ))}
           </View>
 
           <Text style={styles.popupText}>Valige vajalik tüüp:</Text>
           <View style={styles.optionsContainer}>
-            {typeOptions.map((option, index) => (
+            {types.map((type) => (
               <Option
-                key={index}
-                option={option}
-                isSelected={selectedType === option}
-                onPress={handleTypePress}
-              />
+              key={type.$id}
+              option={type.TypeName}
+              isSelected={selectedType === type.$id} 
+              onPress={() => handleTypePress(type)}
+            />            
             ))}
           </View>
 

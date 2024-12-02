@@ -22,7 +22,7 @@ export default function Map() {
   const [banks, setBanks] = useState([]);
   const [types, setTypes] = useState([]);
   const [selectedBanks, setSelectedBanks] = useState([]);
-  const [selectedType, setSelectedType] = useState(null); // No default type selected
+  const [selectedType, setSelectedType] = useState(null); 
   const mapRef = useRef(null);
 
   const client = new Client().setEndpoint(endpoint).setProject(projectID);
@@ -89,29 +89,44 @@ export default function Map() {
   
     fetchAllData();
   }, []);
+  
 
-  // Apply filters whenever the selected banks or type change
+
   useEffect(() => {
-    if (locations.length > 0 && banks.length > 0 && types.length > 0) {
-      applyFilters(locations, banks, types);
+    applyFilters();
+  }, [selectedBanks, selectedType, locations]); 
+  
+
+  const applyFilters = () => {
+  
+    if (!locations || locations.length === 0) {
+      setFilteredLocations([]);
+      return;
     }
-  }, [locations, selectedBanks, selectedType, banks, types]);
-
-  const applyFilters = (locations, banks, types) => {
-    let filtered = locations;
-
+  
+    let filtered = [...locations];
+  
     if (selectedBanks.length > 0) {
-      filtered = filtered.filter((location) =>
-        selectedBanks.includes(location.bankName)  
-      );
+      filtered = filtered.filter((location) => {
+        const matchesBank = location.banks.some((bank) =>
+          selectedBanks.includes(bank.$id) 
+        );
+        
+        return matchesBank;
+      });
     }
-
+  
     if (selectedType) {
-      filtered = filtered.filter((location) => location.aTMType === selectedType);
+      filtered = filtered.filter((location) => {
+        const matchesType = location.aTMTypes?.$id === selectedType; 
+        return matchesType;
+      });
     }
-
+  
     setFilteredLocations(filtered);
   };
+  
+  
 
   const onRegionChange = (newRegion) => {
     setRegion(newRegion);

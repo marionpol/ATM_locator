@@ -3,12 +3,13 @@ import { TouchableOpacity, View, Text, StyleSheet } from 'react-native';
 
 const Option = ({ option, isSelected, onPress }) => {
   return (
-    <TouchableOpacity style={styles.optionContainer} onPress={() => onPress(option)}>
-      <View style={styles.circle}>
-        {isSelected && <View style={styles.selectedCircle} />}
-      </View>
-      <Text style={styles.optionText}>{option}</Text>
-    </TouchableOpacity>
+    <TouchableOpacity style={styles.optionContainer} onPress={onPress}>
+    <View style={styles.circle}>
+      {isSelected && <View style={styles.selectedCircle} />}
+    </View>
+    <Text style={styles.optionText}>{option}</Text>
+  </TouchableOpacity>
+  
   );
 };
 
