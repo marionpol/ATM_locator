@@ -4,6 +4,7 @@ import Option from '@/components/Option';
 
 const MenuFilter = ({ visible, togglePopup, selectedBanks, selectedType, setSelectedBanks, setSelectedType, banks, types }) => {
   const [shouldRender, setShouldRender] = useState(visible);
+  const [darkMode, setDarkMode] = useState(false); // State for dark mode
   const slideAnim = useRef(new Animated.Value(-300)).current;
 
   const handleBankPress = (bank) => {
@@ -14,15 +15,16 @@ const MenuFilter = ({ visible, togglePopup, selectedBanks, selectedType, setSele
       return [...prevSelected, bank.$id];
     });
   };
-  
+
   const handleTypePress = (type) => {
     setSelectedType((prevType) => (prevType === type.$id ? null : type.$id));
   };
-  
-  
+
+  const toggleDarkMode = () => {
+    setDarkMode((prevMode) => !prevMode);
+  };
 
   useEffect(() => {
-
     Animated.timing(slideAnim, {
       toValue: visible ? 0 : -300,
       duration: 300,
@@ -36,53 +38,64 @@ const MenuFilter = ({ visible, togglePopup, selectedBanks, selectedType, setSele
 
   if (!shouldRender) return null;
 
-  
+  const currentStyles = darkMode ? darkStyles : lightStyles; // Choose styles based on dark mode
+
   return (
     <TouchableWithoutFeedback onPress={togglePopup}>
-      <View style={styles.modalOverlay}>
-        <Animated.View style={[styles.popupContainer, { transform: [{ translateX: slideAnim }] }]}>
-          <TouchableOpacity onPress={togglePopup}>
-            <Image style={styles.closeButton} source={require('@/assets/img/close_btn.png')} />
+      <View style={currentStyles.modalOverlay}>
+        <Animated.View style={[currentStyles.popupContainer, { transform: [{ translateX: slideAnim }] }]}>
+        <TouchableOpacity onPress={togglePopup}>
+            <Image
+              style={baseStyles.closeButton}
+              source={
+                darkMode
+                  ? require('@/assets/img/light_icon_close.png') // Dark mode image
+                  : require('@/assets/img/close_btn.png') // Light mode image
+              }
+            />
           </TouchableOpacity>
 
-          <Text style={styles.popupText}>Vali vajalik pank:</Text>
-          <View style={styles.optionsContainer}>
+          <Text style={currentStyles.popupText}>Vali vajalik pank:</Text>
+          <View style={currentStyles.optionsContainer}>
             {banks.map((bank) => (
               <Option
-              key={bank.$id}
-              option={bank.BankName}
-              isSelected={selectedBanks.includes(bank.$id)} 
-              onPress={() => handleBankPress(bank)}
-            />
-            
+                key={bank.$id}
+                option={bank.BankName}
+                isSelected={selectedBanks.includes(bank.$id)}
+                onPress={() => handleBankPress(bank)}
+                darkMode={darkMode}
+              />
             ))}
           </View>
 
-          <Text style={styles.popupText}>Valige vajalik tüüp:</Text>
-          <View style={styles.optionsContainer}>
+          <Text style={currentStyles.popupText}>Valige makse tüüp:</Text>
+          <View style={currentStyles.optionsContainer}>
             {types.map((type) => (
               <Option
-              key={type.$id}
-              option={type.TypeName}
-              isSelected={selectedType === type.$id} 
-              onPress={() => handleTypePress(type)}
-            />            
+                key={type.$id}
+                option={type.TypeName}
+                isSelected={selectedType === type.$id}
+                onPress={() => handleTypePress(type)}
+                darkMode={darkMode}
+              />
             ))}
           </View>
 
-          <View style={styles.divider1} />
-          <Text style={styles.mode}>Tume režiim</Text>
-          <View style={styles.divider2} />
+          <View style={currentStyles.divider1} />
+          <TouchableOpacity onPress={toggleDarkMode}>
+            <Text style={currentStyles.mode}>{darkMode ? 'Hele režiim' : 'Tume režiim'}</Text>
+          </TouchableOpacity>
+          <View style={currentStyles.divider2} />
 
-          <Text style={styles.mode}>Sätted</Text>
-          <Text style={styles.mode}>Tingimused & teenused</Text>
+          <Text style={currentStyles.mode}>Sätted</Text>
+          <Text style={currentStyles.mode}>Tingimused & teenused</Text>
         </Animated.View>
       </View>
     </TouchableWithoutFeedback>
   );
 };
 
-const styles = StyleSheet.create({
+const baseStyles = {
   modalOverlay: {
     flex: 1,
     justifyContent: 'center',
@@ -97,7 +110,6 @@ const styles = StyleSheet.create({
   popupContainer: {
     width: 280,
     height: '100%',
-    backgroundColor: '#fff',
     padding: 20,
     justifyContent: 'flex-start',
     position: 'absolute',
@@ -115,7 +127,6 @@ const styles = StyleSheet.create({
     top: 1,
     right: 1,
     zIndex: 20,
-    color: 'black',
     width: 15,
     height: 15,
     resizeMode: 'contain',
@@ -125,18 +136,64 @@ const styles = StyleSheet.create({
   },
   divider1: {
     height: 1,
-    backgroundColor: '#000',
     marginTop: 210,
   },
   divider2: {
     height: 1,
-    backgroundColor: '#000',
     marginTop: 10,
   },
   mode: {
     fontSize: 18,
     fontWeight: 'bold',
     marginTop: 10,
+  },
+};
+
+const lightStyles = StyleSheet.create({
+  ...baseStyles,
+  popupContainer: {
+    ...baseStyles.popupContainer,
+    backgroundColor: '#fff',
+  },
+  popupText: {
+    ...baseStyles.popupText,
+    color: '#000',
+  },
+  divider1: {
+    ...baseStyles.divider1,
+    backgroundColor: '#000',
+  },
+  divider2: {
+    ...baseStyles.divider2,
+    backgroundColor: '#000',
+  },
+  mode: {
+    ...baseStyles.mode,
+    color: '#000',
+  },
+});
+
+const darkStyles = StyleSheet.create({
+  ...baseStyles,
+  popupContainer: {
+    ...baseStyles.popupContainer,
+    backgroundColor: '#333',
+  },
+  popupText: {
+    ...baseStyles.popupText,
+    color: '#fff',
+  },
+  divider1: {
+    ...baseStyles.divider1,
+    backgroundColor: '#fff',
+  },
+  divider2: {
+    ...baseStyles.divider2,
+    backgroundColor: '#fff',
+  },
+  mode: {
+    ...baseStyles.mode,
+    color: '#fff',
   },
 });
 
