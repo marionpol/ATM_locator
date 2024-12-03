@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import MapView, { Marker } from 'react-native-maps';
-import { StyleSheet, View, ActivityIndicator } from 'react-native';
+import { StyleSheet, View, ActivityIndicator, StatusBar, Dimensions, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import MenuButton from '@/components/menu-button';
 import MenuFilter from '@/app/menu/filter-menu';
@@ -8,6 +8,8 @@ import InfoModule from '@/app/menu/info-menu';
 import { Client, Databases, Query } from 'appwrite';
 import { databaseID, endpoint, locationDBID, projectID, bankID, typeID } from '@/appwrite.config';
 import useAppwrite from '@/constants/useAppwrite';
+import Header from '@/components/mainheader';
+import * as Location from 'expo-location';  
 
 export default function Map() {
   const [region, setRegion] = useState({
@@ -26,6 +28,7 @@ export default function Map() {
   const [selectedType, setSelectedType] = useState(null); 
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [isInfoVisible, setInfoVisible] = useState(false);
+  const [userLocation, setUserLocation] = useState(null);  
   const mapRef = useRef(null);
 
   const client = new Client().setEndpoint(endpoint).setProject(projectID);
@@ -125,13 +128,6 @@ export default function Map() {
     setFilteredLocations(filtered);
   };
 
-  const TARTU_BOUNDS = {
-    latitudeMin: 58.35,
-    latitudeMax: 58.45,
-    longitudeMin: 26.5,
-    longitudeMax: 26.9,
-  };
-
   const togglePopup = () => {
     setPopupVisible(!isPopupVisible);
   };
@@ -150,35 +146,31 @@ export default function Map() {
   };
 
   const onRegionChangeComplete = (newRegion) => {
-    let newLatitude = newRegion.latitude;
-    let newLongitude = newRegion.longitude;
+    setRegion(newRegion);
+  };
 
-    if (
-      newLatitude < TARTU_BOUNDS.latitudeMin ||
-      newLatitude > TARTU_BOUNDS.latitudeMax ||
-      newLongitude < TARTU_BOUNDS.longitudeMin ||
-      newLongitude > TARTU_BOUNDS.longitudeMax
-    ) {
-      newLatitude = (TARTU_BOUNDS.latitudeMin + TARTU_BOUNDS.latitudeMax) / 2;
-      newLongitude = (TARTU_BOUNDS.longitudeMin + TARTU_BOUNDS.longitudeMax) / 2;
-
-      setRegion({
-        latitude: newLatitude,
-        longitude: newLongitude,
-        latitudeDelta: 0.1,  
-        longitudeDelta: 0.1, 
-      });
+  const getUserLocation = async () => {
+    const { status } = await Location.requestForegroundPermissionsAsync();
+    if (status === 'granted') {
+      const location = await Location.getCurrentPositionAsync({});
+      setUserLocation(location.coords);
     } else {
-      setRegion({
-        ...newRegion,
-        latitude: newLatitude,
-        longitude: newLongitude,
-      });
+      Alert.alert('Location Permission Denied', 'Please enable location services to find nearby ATMs.');
     }
   };
 
+  useEffect(() => {
+    getUserLocation();
+  }, []);
+
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: 'white', marginTop: -10, marginBottom: -50 }}>
+    <SafeAreaView style={styles.safearea}>
+      <StatusBar
+        translucent={false} 
+        backgroundColor="#ffffff" 
+        barStyle="dark-content" 
+      />
+      <Header/>
       <View style={styles.container}>
         {locationsLoading || loading ? (
           <ActivityIndicator size="large" color="#0000ff" style={styles.loadingIndicator} />
@@ -186,14 +178,26 @@ export default function Map() {
           <MapView
             ref={mapRef}
             style={styles.map}
-            initialRegion={region}
-            region={region}
+            initialRegion={region}  
+            region={region} 
             onRegionChangeComplete={onRegionChangeComplete} 
             rotateEnabled={true}
             scrollEnabled={true} 
             zoomEnabled={true} 
-            maxDelta={0.15} 
+            maxDelta={2}
           >
+            {userLocation && (
+              <Marker
+                coordinate={{
+                  latitude: userLocation.latitude,
+                  longitude: userLocation.longitude,
+                }}
+                title="Your Location"
+                description="This is your current location"
+                pinColor="blue"
+              />
+            )}
+
             {filteredLocations.map((location, index) => {
               const latitude = parseFloat(location.Longitude);
               const longitude = parseFloat(location.Latitude);
@@ -249,11 +253,14 @@ export default function Map() {
   );
 }
 
+const { width, height } = Dimensions.get('window');
+
 const styles = StyleSheet.create({
+  safearea: {
+    flex: 1,
+  },
   container: {
     flex: 1,
-    marginBottom: -50,
-    marginTop: -50,
   },
   map: {
     flex: 1,
@@ -265,10 +272,9 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     position: 'absolute',
-    top: '2%',
-    left: '15%',
-    transform: [{ translateX: -50 }],
+    top: height * 0.02,
+    left: width * 0.04, 
     zIndex: 10,
-    width: '80%',
+    width: width * 0.8, 
   },
 });

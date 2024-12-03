@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useFonts } from 'expo-font';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, Alert } from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
 import Map from './(tabs)/map';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import * as Location from 'expo-location';
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -23,6 +24,36 @@ export default function App() {
     prepareApp();
   }, [fontsLoaded]); 
 
+  const requestLocationPermission = async () => {
+    const { status } = await Location.requestForegroundPermissionsAsync();
+    if (status === 'granted') {
+   
+      const location = await Location.getCurrentPositionAsync({});
+      console.log(location);
+      
+    } else {
+      Alert.alert('Location Permission Denied', 'We need your location to show nearby ATMs.');
+    }
+  };
+
+  const handleButtonPress = () => {
+    Alert.alert(
+      'Allow Location Access?',
+      'Do you want to share your location to find nearby ATMs?',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Location access denied'),
+          style: 'cancel',
+        },
+        {
+          text: 'Yes',
+          onPress: () => requestLocationPermission(),
+        },
+      ]
+    );
+  };
+
   if (!fontsLoaded) {
     return null; 
   }
@@ -39,7 +70,10 @@ export default function App() {
           </Text>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => setIsSplashVisible(false)}
+            onPress={() => {
+              setIsSplashVisible(false);
+              handleButtonPress(); 
+            }}
           >
             <Text style={styles.buttonText}>Edasi</Text>
           </TouchableOpacity>
