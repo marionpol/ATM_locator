@@ -154,7 +154,7 @@ const lightStyles = StyleSheet.create({
   ...baseStyles,
   popupContainer: {
     ...baseStyles.popupContainer,
-    backgroundColor: '#fff',
+    backgroundColor: '#EFF5FD',
   },
   popupText: {
     ...baseStyles.popupText,

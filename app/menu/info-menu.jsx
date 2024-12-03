@@ -23,9 +23,26 @@ export default function InfoModule({ visible, data, onClose }) {
           </TouchableOpacity>
 
           <Text style={styles.title}>{data.Name || "Location Details"}</Text>
-          <Text style={styles.text}>Aadress: {data.Address || "Not available"}</Text>
-          <Text style={styles.text}>Tüüp: {data.aTMTypes?.TypeName || "Not specified"}</Text>
-          <Text style={styles.text}>Detailid: {data.Details || "Not specified"}</Text>
+          <View style={styles.row}>
+            <Image
+              style={styles.locationImage}
+              source={require('@/assets/img/Location.png')}
+              resizeMode="contain"
+            />
+            <Text style={styles.text}>{data.Address || "Not available"}</Text>
+          </View>
+          <View style={styles.row}>
+            <Image
+              style={styles.typeImage}
+              source={require('@/assets/img/Cardcash.png')}
+              resizeMode="contain"
+            />
+            <Text style={styles.text}>{data.aTMTypes?.TypeName || "Not available"}</Text>
+          </View>
+          <View>
+            <Text style={styles.title2}>Detailid:</Text>
+            <Text style={styles.details}>{data.Details || "Not specified"}</Text>
+          </View>
         </View>
       </View>
     </Modal>
@@ -39,23 +56,37 @@ const styles = StyleSheet.create({
     alignItems: 'center',      
   },
   modalContent: {
-    backgroundColor: 'white',
+    backgroundColor: '#EFF5FD',
     borderRadius: 10,
     padding: 20,
     paddingTop: 50,
     marginBottom: 20,
     height: 250,              
     width: '95%',          
-    alignItems: 'flex-start',  // Changed from 'start' to 'flex-start'
+    alignItems: 'flex-start', 
+  },
+  row: {
+    flexDirection: 'row',  
+    alignItems: 'center',  
+    marginBottom: 5,       
   },
   title: {
-    fontSize: 24,           
+    fontSize: 18,           
     fontWeight: 'bold',
-    marginBottom: 10,  // Reduced margin to bring text closer
+    marginBottom: 10,  
+  },
+  title2: {
+    fontSize: 18,           
+    fontWeight: 'bold',
+    marginBottom: 10,
+    marginTop: 10,  
   },
   text: {
-    fontSize: 16,  // Added a consistent font size for other text
-    marginBottom: 8,  // Added margin for spacing between lines
+    fontSize: 16, 
+    marginLeft: 5,
+  },
+  details: {
+    fontSize: 16,
   },
   closeButton: {
     position: 'absolute',
@@ -66,5 +97,14 @@ const styles = StyleSheet.create({
   closeButtonImage: {
     width: 15,   
     height: 15,  
+  },
+  locationImage: {
+    width: 30,   
+    height: 30,
+    right: 3,
+  },
+  typeImage: {
+    width: 30,   
+    height: 30,
   },
 });
