@@ -8,8 +8,8 @@ import * as Location from 'expo-location';
 
 export default function App() {
   const [fontsLoaded] = useFonts({
-    'InclusiveSans-Regular': require('./../assets/fonts/InclusiveSans-Regular.ttf'),
-    'AbhayaLibre-Regular': require('./../assets/fonts/AbhayaLibre-Regular.ttf'),
+    'InclusiveSans-Regular': require('@/assets/fonts/InclusiveSans-Regular.ttf'),
+    'AbhayaLibre-Regular': require('@/assets/fonts/AbhayaLibre-Regular.ttf'),
   });
 
   const [isSplashVisible, setIsSplashVisible] = useState(true);
@@ -64,7 +64,7 @@ export default function App() {
         <View style={styles.splashContainer}>
           <Text style={styles.maintext}>ATM</Text>
           <Text style={styles.secondtext}>Leidja</Text>
-          <Image style={styles.image} source={require('./../assets/img/atmpilt.png')} />
+          <Image style={styles.image} source={require('@/assets/img/atmpilt.png')} />
           <Text style={styles.splashText}>
             Tere tulemast pangaautomaatide otsimise äppi!
           </Text>

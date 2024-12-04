@@ -7,14 +7,14 @@ const Option = ({ option, isSelected, onPress, darkMode }) => {
       <View
         style={[
           styles.circle,
-          darkMode && { borderColor: '#fff' }, // Change border color for dark mode
+          darkMode && { borderColor: '#fff' }, 
         ]}
       >
         {isSelected && (
           <View
             style={[
               styles.selectedCircle,
-              darkMode && { backgroundColor: '#fff' }, // Change fill color for dark mode
+              darkMode && { backgroundColor: '#fff' }, 
             ]}
           />
         )}
@@ -22,7 +22,7 @@ const Option = ({ option, isSelected, onPress, darkMode }) => {
       <Text
         style={[
           styles.optionText,
-          darkMode && { color: '#fff' }, // Change text color for dark mode
+          darkMode && { color: '#fff' }, 
         ]}
       >
         {option}
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     height: 24,
     borderRadius: 12,
     borderWidth: 2,
-    borderColor: '#000', // Default border color
+    borderColor: '#000', 
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -50,12 +50,12 @@ const styles = StyleSheet.create({
     width: 12,
     height: 12,
     borderRadius: 6,
-    backgroundColor: '#000', // Default fill color
+    backgroundColor: '#000',
   },
   optionText: {
     fontSize: 16,
     marginLeft: 10,
-    color: '#000', // Default text color
+    color: '#000', 
   },
 });
 

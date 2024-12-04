@@ -164,7 +164,12 @@ export default function Map() {
   }, []);
 
   return (
-    <SafeAreaView style={styles.safearea}>
+    <SafeAreaView
+    edges={"top"}
+      style={{
+        flex: 1,
+      }}
+    >
       <StatusBar
         translucent={false} 
         backgroundColor="#ffffff" 
@@ -256,9 +261,6 @@ export default function Map() {
 const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
-  safearea: {
-    flex: 1,
-  },
   container: {
     flex: 1,
   },
