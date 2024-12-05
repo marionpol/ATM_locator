@@ -1,12 +1,15 @@
 import React from 'react';
 import { StyleSheet, View, Text, Modal, TouchableOpacity, Image, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { useDarkMode } from '@/components/DarkMode';
 
 export default function InfoModule({ visible, data, onClose }) {
   if (!data) return null;
 
+  const { isDarkMode } = useDarkMode();
+
   const handleModalClose = () => {
-    Keyboard.dismiss(); 
-    onClose(); 
+    Keyboard.dismiss();
+    onClose();
   };
 
   return (
@@ -19,24 +22,53 @@ export default function InfoModule({ visible, data, onClose }) {
       <TouchableWithoutFeedback onPress={handleModalClose}>
         <View style={styles.modalContainer}>
           <TouchableWithoutFeedback onPress={() => {}}>
-            <View style={styles.modalContent}>
+            <View
+              style={[
+                styles.modalContent,
+                isDarkMode && styles.modalContentDark, 
+              ]}
+            >
               <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-                <Image
-                  style={styles.closeButtonImage}
-                  source={require('@/assets/img/close_btn.png')} 
-                  resizeMode="contain" 
-                />
+              <Image
+                source={
+                  isDarkMode
+                    ? require('@/assets/img/light_icon_close.png')
+                    : require('@/assets/img/close_btn.png')      
+                }
+                style={styles.closeButtonImage}
+              />
               </TouchableOpacity>
 
-              <Text style={styles.title}>{data.Name || "Location Details"}</Text>
-              <Text style={styles.bank}>{data.banks?.[0]?.BankName || "Bank"}</Text>
+              <Text
+                style={[
+                  styles.title,
+                  isDarkMode && styles.textDark, 
+                ]}
+              >
+                {data.Name || "Location Details"}
+              </Text>
+              <Text
+                style={[
+                  styles.bank,
+                  isDarkMode && styles.textDark, 
+                ]}
+              >
+                {data.banks?.[0]?.BankName || "Bank"}
+              </Text>
               <View style={styles.row}>
                 <Image
                   style={styles.locationImage}
                   source={require('@/assets/img/Location.png')}
                   resizeMode="contain"
                 />
-                <Text style={styles.text}>{data.Address || "Not available"}</Text>
+                <Text
+                  style={[
+                    styles.text,
+                    isDarkMode && styles.textDark, 
+                  ]}
+                >
+                  {data.Address || "Not available"}
+                </Text>
               </View>
               <View style={styles.row}>
                 <Image
@@ -44,11 +76,32 @@ export default function InfoModule({ visible, data, onClose }) {
                   source={require('@/assets/img/Cardcash.png')}
                   resizeMode="contain"
                 />
-                <Text style={styles.text}>{data.aTMTypes?.TypeName || "Not available"}</Text>
+                <Text
+                  style={[
+                    styles.text,
+                    isDarkMode && styles.textDark, 
+                  ]}
+                >
+                  {data.aTMTypes?.TypeName || "Not available"}
+                </Text>
               </View>
               <View>
-                <Text style={styles.title2}>Detailid:</Text>
-                <Text style={styles.details}>{data.Details || "Not specified"}</Text>
+                <Text
+                  style={[
+                    styles.title2,
+                    isDarkMode && styles.textDark, 
+                  ]}
+                >
+                  Detailid:
+                </Text>
+                <Text
+                  style={[
+                    styles.details,
+                    isDarkMode && styles.textDark, 
+                  ]}
+                >
+                  {data.Details || "Not specified"}
+                </Text>
               </View>
             </View>
           </TouchableWithoutFeedback>
@@ -63,10 +116,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0)',
   },
   modalContent: {
-    backgroundColor: '#EFF5FD',
+    backgroundColor: '#EFF5FD', 
     borderRadius: 10,
     padding: 20,
     paddingTop: 50,
@@ -74,6 +126,9 @@ const styles = StyleSheet.create({
     height: 250,
     width: '95%',
     alignItems: 'flex-start',
+  },
+  modalContentDark: {
+    backgroundColor: '#2C2C2C', 
   },
   row: {
     flexDirection: 'row',
@@ -84,28 +139,35 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 10,
+    color: '#000', 
   },
-  bank:{
+  bank: {
     fontSize: 18,
     fontWeight: 'bold',
     position: 'absolute',
     flex: 1,
     alignSelf: 'center',
-    margin: 20
-
+    margin: 20,
+    color: '#000',
   },
   title2: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 10,
     marginTop: 10,
+    color: '#000',
   },
   text: {
     fontSize: 16,
     marginLeft: 5,
+    color: '#000', 
   },
   details: {
     fontSize: 16,
+    color: '#000', 
+  },
+  textDark: {
+    color: '#FFF', 
   },
   closeButton: {
     position: 'absolute',

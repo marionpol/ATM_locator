@@ -1,20 +1,24 @@
 import React from 'react';
 import { TouchableOpacity, View, Text, StyleSheet } from 'react-native';
+import { useDarkMode } from '@/components/DarkMode';
 
-const Option = ({ option, isSelected, onPress, darkMode }) => {
+const Option = ({ option, isSelected, onPress }) => {
+  
+  const { isDarkMode } = useDarkMode();
+
   return (
     <TouchableOpacity style={styles.optionContainer} onPress={onPress}>
       <View
         style={[
           styles.circle,
-          darkMode && { borderColor: '#fff' }, 
+          isDarkMode && { borderColor: '#fff' },
         ]}
       >
         {isSelected && (
           <View
             style={[
               styles.selectedCircle,
-              darkMode && { backgroundColor: '#fff' }, 
+              isDarkMode && { backgroundColor: '#fff' }, 
             ]}
           />
         )}
@@ -22,7 +26,7 @@ const Option = ({ option, isSelected, onPress, darkMode }) => {
       <Text
         style={[
           styles.optionText,
-          darkMode && { color: '#fff' }, 
+          isDarkMode && { color: '#fff' }, 
         ]}
       >
         {option}
@@ -30,7 +34,6 @@ const Option = ({ option, isSelected, onPress, darkMode }) => {
     </TouchableOpacity>
   );
 };
-
 const styles = StyleSheet.create({
   optionContainer: {
     flexDirection: 'row',

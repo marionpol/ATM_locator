@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useFonts } from 'expo-font';
 import { View, Text, StyleSheet, TouchableOpacity, Image, Alert } from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack'; // Stack navigator for navigation
-import Map from './(tabs)/map'; // Your Map screen
+import { createStackNavigator } from '@react-navigation/stack'; 
+import Map from './(tabs)/map';
 import Settings from '@/app/menu/settings';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Location from 'expo-location';
+import { DarkModeProvider } from '@/components/DarkMode';
 
 const Stack = createStackNavigator();
 
@@ -87,6 +87,7 @@ export default function App() {
 
   // Return your Stack Navigator
   return (
+    <DarkModeProvider>
       <Stack.Navigator initialRouteName="Home">
       <Stack.Screen
         name="Home"
@@ -97,7 +98,8 @@ export default function App() {
         name="Settings"
         component={Settings} 
       />
-    </Stack.Navigator>
+      </Stack.Navigator>
+    </DarkModeProvider>
   );
 }
 

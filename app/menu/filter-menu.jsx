@@ -3,13 +3,15 @@ import { View, Text, TouchableOpacity, Modal, StyleSheet, Animated, TouchableWit
 import Option from '@/components/Option';
 import { useNavigation } from '@react-navigation/native';
 import Settings from '@/app/menu/settings';
+import { useDarkMode } from '@/components/DarkMode';
 
 const MenuFilter = ({ visible, togglePopup, selectedBanks, selectedType, setSelectedBanks, setSelectedType, banks, types }) => {
   const [shouldRender, setShouldRender] = useState(visible);
   const slideAnim = useRef(new Animated.Value(-300)).current;
   const navigation = useNavigation();
-
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
+
+  const { isDarkMode, toggleDarkMode } = useDarkMode(); // Access isDarkMode and toggleDarkMode
 
   const handleBankPress = (bank) => {
     setSelectedBanks((prevSelected) => {
@@ -49,15 +51,26 @@ const MenuFilter = ({ visible, togglePopup, selectedBanks, selectedType, setSele
   return (
     <TouchableWithoutFeedback onPress={togglePopup}>
       <View style={styles.modalOverlay}>
-        <Animated.View style={[styles.popupContainer, { transform: [{ translateX: slideAnim }] }]}>
+        <Animated.View
+          style={[
+            styles.popupContainer,
+            { transform: [{ translateX: slideAnim }], backgroundColor: isDarkMode ? '#2C2C2C' : '#ffffff' },
+          ]}
+        >
           <TouchableOpacity onPress={togglePopup}>
-            <Image
-              style={styles.closeButton}
-              source={require('@/assets/img/close_btn.png')}
-            />
+          <Image
+            source={
+              isDarkMode
+                ? require('@/assets/img/light_icon_close.png')
+                : require('@/assets/img/close_btn.png')      
+            }
+            style={styles.closeButton}
+          />
           </TouchableOpacity>
 
-          <Text style={styles.popupText}>Vali vajalik pank:</Text>
+          <Text style={[styles.popupText, { color: isDarkMode ? '#ffffff' : '#000000' }]}>
+            Vali vajalik pank:
+          </Text>
           <View style={styles.optionsContainer}>
             {banks.map((bank) => (
               <Option
@@ -69,7 +82,9 @@ const MenuFilter = ({ visible, togglePopup, selectedBanks, selectedType, setSele
             ))}
           </View>
 
-          <Text style={styles.popupText}>Valige makse tüüp:</Text>
+          <Text style={[styles.popupText, { color: isDarkMode ? '#ffffff' : '#000000' }]}>
+            Valige makse tüüp:
+          </Text>
           <View style={styles.optionsContainer}>
             {types.map((type) => (
               <Option
@@ -81,13 +96,17 @@ const MenuFilter = ({ visible, togglePopup, selectedBanks, selectedType, setSele
             ))}
           </View>
 
-          <View style={styles.divider1} />
-          <TouchableOpacity onPress={handleSettingsPress}>
-            <Text style={styles.mode}>Tume režiim</Text>
+          <View style={[styles.divider1, { backgroundColor: isDarkMode ? '#ffffff' : '#000000' }]} />
+          <TouchableOpacity onPress={toggleDarkMode}>
+            <Text style={[styles.mode, { color: isDarkMode ? '#ffffff' : '#000000' }]}>
+              {isDarkMode ? 'Hele režiim' : 'Tume režiim'} {/* Dynamically change text */}
+            </Text>
           </TouchableOpacity>
-          <View style={styles.divider2} />
+          <View style={[styles.divider2, { backgroundColor: isDarkMode ? '#ffffff' : '#000000' }]} />
           <TouchableOpacity onPress={handleSettingsPress}>
-            <Text style={styles.mode}>Sätted</Text>
+            <Text style={[styles.mode, { color: isDarkMode ? '#ffffff' : '#000000' }]}>
+              Sätted
+            </Text>
           </TouchableOpacity>
 
           <Modal
@@ -98,19 +117,25 @@ const MenuFilter = ({ visible, togglePopup, selectedBanks, selectedType, setSele
           >
             <TouchableWithoutFeedback onPress={closeSettings}>
               <View style={styles.overlay}>
-                <View style={styles.modalContent}>
                 <TouchableOpacity onPress={closeSettings}>
                   <Image
+                    source={
+                      isDarkMode
+                        ? require('@/assets/img/light_icon_close.png')
+                        : require('@/assets/img/close_btn.png')      
+                    }
                     style={styles.closeButton}
-                    source={require('@/assets/img/close_btn.png')}
                   />
                 </TouchableOpacity>
-                  <Settings />
-                </View>
+                  <View style={[styles.modalContent, { backgroundColor: isDarkMode ? '#2C2C2C' : '#ffffff' }]}>
+                    <Settings />
+                  </View>
               </View>
             </TouchableWithoutFeedback>
           </Modal>
-          <Text style={styles.mode}>Tingimused & teenused</Text>
+          <Text style={[styles.mode, { color: isDarkMode ? '#ffffff' : '#000000' }]}>
+            Tingimused & teenused
+          </Text>
         </Animated.View>
       </View>
     </TouchableWithoutFeedback>
@@ -138,13 +163,13 @@ const styles = StyleSheet.create({
     left: 0,
     top: 0,
     borderRadius: '5%',
-    backgroundColor: '#EFF5FD', // Light background color for light mode
+    backgroundColor: useDarkMode ? '#121212' : '#ffffff', 
   },
   popupText: {
     fontSize: 18,
     fontWeight: 'bold',
     marginTop: 40,
-    color: '#000', // Text color for light mode
+    color: useDarkMode ? '#ffffff' : '#000000',
   },
   closeButton: {
     position: 'absolute',
@@ -161,24 +186,22 @@ const styles = StyleSheet.create({
   divider1: {
     height: 1,
     marginTop: 210,
-    backgroundColor: '#000',
   },
   divider2: {
     height: 1,
     marginTop: 10,
-    backgroundColor: '#000',
   },
   mode: {
     fontSize: 18,
     fontWeight: 'bold',
     marginTop: 10,
-    color: '#000',
+    color: useDarkMode ? '#ffffff' : '#000000',
   },
   overlay: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Overlay effect
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', 
   },
   modalContent: {
     width: 350,

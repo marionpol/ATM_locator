@@ -9,9 +9,13 @@ import { Client, Databases, Query } from 'appwrite';
 import { databaseID, endpoint, locationDBID, projectID, bankID, typeID } from '@/appwrite.config';
 import useAppwrite from '@/constants/useAppwrite';
 import Header from '@/components/mainheader';
-import * as Location from 'expo-location';  
+import * as Location from 'expo-location';
+import { useDarkMode } from '@/components/DarkMode';
+  
 
 export default function Map() {
+  const { isDarkMode, toggleDarkMode } = useDarkMode();
+  
   const [region, setRegion] = useState({
     latitude: 58.3784, 
     longitude: 26.7179, 
@@ -166,9 +170,7 @@ export default function Map() {
   return (
     <SafeAreaView
     edges={"top"}
-      style={{
-        flex: 1,
-      }}
+    style={{ flex: 1, backgroundColor: isDarkMode ? '#000' : '#fff' }}
     >
       <StatusBar
         translucent={false} 

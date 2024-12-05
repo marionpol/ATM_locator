@@ -1,7 +1,10 @@
 import React from 'react';
 import { TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { useDarkMode } from '@/components/DarkMode';
 
 const MenuButton = ({ handlePress, containerStyles, isLoading }) => {
+  const { isDarkMode } = useDarkMode(); 
+
   return (
     <TouchableOpacity
       onPress={handlePress}
@@ -9,18 +12,25 @@ const MenuButton = ({ handlePress, containerStyles, isLoading }) => {
       style={[
         styles.buttonContainer,
         containerStyles,
+        { backgroundColor: isDarkMode ? '#2C2C2C' : '#EFF5FD' }, 
         isLoading ? styles.disabledButton : {},
       ]}
       disabled={isLoading}
     >
-      <Image source={require('@/assets/img/filter.png')} style={styles.buttonImage} />
+      <Image
+        source={
+          isDarkMode
+            ? require('@/assets/img/whitefilter.png')
+            : require('@/assets/img/filter.png')      
+        }
+        style={styles.buttonImage}
+      />
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   buttonContainer: {
-    backgroundColor: '#EFF5FD',
     borderRadius: 5,
     width: 50,
     height: 42,
