@@ -1,6 +1,6 @@
 # ATM locator app in Tartu
 
-### Currently in early development
+### Working MVP
 
 This mobile app is for finding ATM's of different banks in Tartu (as of now). It will have a map with small points for different ATM's and the user is able to categorize them as well.
 
@@ -18,3 +18,7 @@ This mobile app is for finding ATM's of different banks in Tartu (as of now). It
     npx expo start
    ```
 
+
+### Future developments
+
+More broad than Tartu, available on play store and app store, more banks and more details about the locations themselves.
