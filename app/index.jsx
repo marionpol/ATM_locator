@@ -2,9 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useFonts } from 'expo-font';
 import { View, Text, StyleSheet, TouchableOpacity, Image, Alert } from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
-import Map from './(tabs)/map';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack'; // Stack navigator for navigation
+import Map from './(tabs)/map'; // Your Map screen
+import Settings from '@/app/menu/settings';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Location from 'expo-location';
+
+const Stack = createStackNavigator();
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -27,10 +32,8 @@ export default function App() {
   const requestLocationPermission = async () => {
     const { status } = await Location.requestForegroundPermissionsAsync();
     if (status === 'granted') {
-   
       const location = await Location.getCurrentPositionAsync({});
       console.log(location);
-      
     } else {
       Alert.alert('Location Permission Denied', 'We need your location to show nearby ATMs.');
     }
@@ -82,7 +85,20 @@ export default function App() {
     );
   }
 
-  return <Map />;
+  // Return your Stack Navigator
+  return (
+      <Stack.Navigator initialRouteName="Home">
+      <Stack.Screen
+        name="Home"
+        component={Map} 
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Settings"
+        component={Settings} 
+      />
+    </Stack.Navigator>
+  );
 }
 
 const styles = StyleSheet.create({

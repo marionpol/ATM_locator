@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import MapView, { Marker } from 'react-native-maps';
-import { StyleSheet, View, ActivityIndicator, StatusBar, Dimensions, Alert } from 'react-native';
+import { StyleSheet, View, ActivityIndicator, StatusBar, Dimensions, Alert, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import MenuButton from '@/components/menu-button';
 import MenuFilter from '@/app/menu/filter-menu';
@@ -28,7 +28,7 @@ export default function Map() {
   const [selectedType, setSelectedType] = useState(null); 
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [isInfoVisible, setInfoVisible] = useState(false);
-  const [userLocation, setUserLocation] = useState(null);  
+  const [userLocation, setUserLocation] = useState(null);
   const mapRef = useRef(null);
 
   const client = new Client().setEndpoint(endpoint).setProject(projectID);
@@ -193,14 +193,18 @@ export default function Map() {
           >
             {userLocation && (
               <Marker
-                coordinate={{
-                  latitude: userLocation.latitude,
-                  longitude: userLocation.longitude,
-                }}
-                title="Your Location"
-                description="This is your current location"
-                pinColor="blue"
+              coordinate={{
+                latitude: userLocation.latitude,
+                longitude: userLocation.longitude,
+              }}
+              title="Your Location"
+              description="This is your current location"
+            >
+              <Image
+                source={require('@/assets/img/yourlocation.png')}
+                style={{ width: 35, height: 35 }}
               />
+            </Marker>
             )}
 
             {filteredLocations.map((location, index) => {
